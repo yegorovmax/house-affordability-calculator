@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Affordability Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #000;
+            background-color: #fff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 32px 0;
+            border-bottom: 2px solid #000;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: #666;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Calculator Container */
+        .calculator-container {
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        /* Form Styles */
+        .calculator-form {
+            padding: 32px;
+        }
+
+        .input-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 12px;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            color: #000;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            border: 2px solid #000;
+            border-radius: 8px;
+            background: #fff;
+            transition: all 0.2s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #333;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 16px;
+            font-size: 1rem;
+            background: transparent;
+            color: #000;
+            font-weight: 500;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #999;
+            font-weight: 400;
+        }
+
+        .currency-symbol,
+        .percent-symbol,
+        .term-symbol {
+            padding: 0 16px;
+            font-weight: 600;
+            color: #000;
+            font-size: 1rem;
+            background: #f8f8f8;
+            border-left: 1px solid #e5e5e5;
+        }
+
+        .help-text {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.875rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Button Styles */
+        .button-section {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .calculate-btn,
+        .reset-btn {
+            flex: 1;
+            padding: 16px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid #000;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .calculate-btn {
+            background: #000;
+            color: #fff;
+        }
+
+        .calculate-btn:hover {
+            background: #333;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .reset-btn {
+            background: #fff;
+            color: #000;
+        }
+
+        .reset-btn:hover {
+            background: #f8f8f8;
+            transform: translateY(-1px);
+        }
+
+        .reset-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Results Section */
+        .results-section {
+            padding: 32px;
+            background: #f8f8f8;
+            border-top: 2px solid #000;
+        }
+
+        .results-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .result-card {
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-card.primary {
+            background: #000;
+            color: #fff;
+        }
+
+        .result-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .result-card.primary .result-label {
+            color: #ccc;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .result-card.primary .result-value {
+            color: #fff;
+        }
+
+        /* Monthly Breakdown */
+        .monthly-breakdown,
+        .affordability-metrics,
+        .guidelines {
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .monthly-breakdown h3,
+        .affordability-metrics h3,
+        .guidelines h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 12px;
+        }
+
+        .breakdown-item,
+        .metric-item,
+        .guideline-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .breakdown-item:last-child,
+        .metric-item:last-child,
+        .guideline-item:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-item.total {
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-top: 2px solid #000;
+            margin-top: 12px;
+            padding-top: 16px;
+        }
+
+        .breakdown-label,
+        .metric-label,
+        .guideline-text {
+            color: #000;
+            font-weight: 500;
+        }
+
+        .breakdown-value,
+        .metric-value {
+            color: #000;
+            font-weight: 600;
+        }
+
+        .guideline-status {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .guideline-status:contains("✓") {
+            color: #22c55e;
+        }
+
+        .guideline-status:contains("✗") {
+            color: #ef4444;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 32px 0;
+            border-top: 1px solid #e5e5e5;
+            margin-top: 32px;
+        }
+
+        .footer p {
+            color: #666;
+            font-size: 0.9rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 12px;
+            }
+            
+            .header {
+                padding: 24px 0;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .calculator-form {
+                padding: 24px 16px;
+            }
+            
+            .input-section h2 {
+                font-size: 1.25rem;
+            }
+            
+            .input-wrapper {
+                border-radius: 6px;
+            }
+            
+            .input-wrapper input {
+                padding: 14px;
+                font-size: 0.95rem;
+            }
+            
+            .currency-symbol,
+            .percent-symbol,
+            .term-symbol {
+                padding: 0 12px;
+                font-size: 0.9rem;
+            }
+            
+            .button-section {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .calculate-btn,
+            .reset-btn {
+                padding: 14px 20px;
+                font-size: 0.95rem;
+            }
+            
+            .results-section {
+                padding: 24px 16px;
+            }
+            
+            .results-section h2 {
+                font-size: 1.25rem;
+            }
+            
+            .result-card {
+                padding: 20px;
+            }
+            
+            .result-value {
+                font-size: 1.75rem;
+            }
+            
+            .monthly-breakdown,
+            .affordability-metrics,
+            .guidelines {
+                padding: 20px;
+            }
+            
+            .monthly-breakdown h3,
+            .affordability-metrics h3,
+            .guidelines h3 {
+                font-size: 1.1rem;
+            }
+            
+            .breakdown-item,
+            .metric-item,
+            .guideline-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            
+            .breakdown-value,
+            .metric-value {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .calculator-form {
+                padding: 20px 12px;
+            }
+            
+            .input-group {
+                margin-bottom: 20px;
+            }
+            
+            .input-wrapper input {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+            
+            .currency-symbol,
+            .percent-symbol,
+            .term-symbol {
+                padding: 0 10px;
+                font-size: 0.85rem;
+            }
+            
+            .result-value {
+                font-size: 1.5rem;
+            }
+            
+            .monthly-breakdown,
+            .affordability-metrics,
+            .guidelines {
+                padding: 16px;
+            }
+        }
+
+        /* Tablet Styles */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .result-card.primary {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 1025px) {
+            .results-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .breakdown-item,
+            .metric-item,
+            .guideline-item {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        /* Focus and Accessibility */
+        input:focus {
+            outline: none;
+        }
+
+        button:focus {
+            outline: 2px solid #000;
+            outline-offset: 2px;
+        }
+
+        /* Animation for results */
+        .results-section {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading state */
+        .calculating {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .calculating .calculate-btn {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        /* Error states */
+        .input-wrapper.error {
+            border-color: #ef4444;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>How Much House Can I Afford?</h1>
+            <p class="subtitle">Calculate your maximum home purchase price based on your income and expenses</p>
+        </header>
+
+        <div class="calculator-container">
+            <form id="affordability-form" class="calculator-form">
+                <div class="input-section">
+                    <h2>Your Financial Information</h2>
+                    
+                    <div class="input-group">
+                        <label for="gross-income">Gross Annual Income</label>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="gross-income" name="grossIncome" placeholder="75,000" min="0" step="1">
+                        </div>
+                        <small class="help-text">Your total annual income before taxes</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="monthly-debts">Monthly Debt Payments</label>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="monthly-debts" name="monthlyDebts" placeholder="500" min="0" step="50">
+                        </div>
+                        <small class="help-text">Car loans, student loans, credit cards, etc.</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="down-payment-percent">Down Payment Percentage</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="down-payment-percent" name="downPaymentPercent" placeholder="20" min="0" max="100" step="1">
+                            <span class="percent-symbol">%</span>
+                        </div>
+                        <small class="help-text">Typical down payment is 20%</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="interest-rate">Interest Rate</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="interest-rate" name="interestRate" placeholder="7.5" min="0" max="20" step="0.1">
+                            <span class="percent-symbol">%</span>
+                        </div>
+                        <small class="help-text">Current mortgage interest rate</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="loan-term">Loan Term</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="loan-term" name="loanTerm" placeholder="30" min="1" max="50" step="1">
+                            <span class="term-symbol">years</span>
+                        </div>
+                        <small class="help-text">Length of your mortgage</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="property-tax-rate">Property Tax Rate (Annual)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="property-tax-rate" name="propertyTaxRate" placeholder="1.2" min="0" max="5" step="0.1">
+                            <span class="percent-symbol">%</span>
+                        </div>
+                        <small class="help-text">Local property tax rate (varies by location)</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="insurance-annual">Home Insurance (Annual)</label>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="insurance-annual" name="insuranceAnnual" placeholder="1,200" min="0" step="100">
+                        </div>
+                        <small class="help-text">Annual homeowners insurance cost</small>
+                    </div>
+                </div>
+
+                <div class="button-section">
+                    <button type="submit" class="calculate-btn">Calculate Affordability</button>
+                    <button type="button" id="reset-btn" class="reset-btn">Reset</button>
+                </div>
+            </form>
+
+            <div id="results" class="results-section" style="display: none;">
+                <h2>Your Affordability Results</h2>
+                
+                <div class="results-grid">
+                    <div class="result-card primary">
+                        <div class="result-label">Maximum Home Price</div>
+                        <div class="result-value" id="max-home-price">$0</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-label">Maximum Loan Amount</div>
+                        <div class="result-value" id="max-loan-amount">$0</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-label">Down Payment Required</div>
+                        <div class="result-value" id="down-payment-amount">$0</div>
+                    </div>
+                </div>
+
+                <div class="monthly-breakdown">
+                    <h3>Monthly Payment Breakdown</h3>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Principal & Interest</span>
+                        <span class="breakdown-value" id="principal-interest">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Property Taxes</span>
+                        <span class="breakdown-value" id="property-taxes">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Home Insurance</span>
+                        <span class="breakdown-value" id="home-insurance">$0</span>
+                    </div>
+                    <div class="breakdown-item total">
+                        <span class="breakdown-label">Total Monthly Payment</span>
+                        <span class="breakdown-value" id="total-monthly-payment">$0</span>
+                    </div>
+                </div>
+
+                <div class="affordability-metrics">
+                    <h3>Affordability Metrics</h3>
+                    <div class="metric-item">
+                        <span class="metric-label">Debt-to-Income Ratio</span>
+                        <span class="metric-value" id="dti-ratio">0%</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Housing Payment Ratio</span>
+                        <span class="metric-value" id="housing-ratio">0%</span>
+                    </div>
+                </div>
+
+                <div class="guidelines">
+                    <h3>Lending Guidelines</h3>
+                    <div class="guideline-item">
+                        <span class="guideline-text">Housing payment should be ≤ 28% of gross income</span>
+                        <span class="guideline-status" id="housing-guideline">✓</span>
+                    </div>
+                    <div class="guideline-item">
+                        <span class="guideline-text">Total debt payments should be ≤ 36% of gross income</span>
+                        <span class="guideline-status" id="dti-guideline">✓</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>This calculator provides estimates only. Consult with a financial advisor and mortgage lender for personalized advice.</p>
+        </footer>
+    </div>
+
+    <script>
+        // House Affordability Calculator
+        class AffordabilityCalculator {
+            constructor() {
+                this.form = document.getElementById('affordability-form');
+                this.resetBtn = document.getElementById('reset-btn');
+                this.resultsSection = document.getElementById('results');
+                this.userHasInteracted = false;
+                
+                this.initializeEventListeners();
+                this.setDefaultValues();
+            }
+
+            initializeEventListeners() {
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                this.resetBtn.addEventListener('click', () => this.resetForm());
+                
+                // Real-time calculation on input change
+                const inputs = this.form.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.addEventListener('input', () => {
+                        this.userHasInteracted = true;
+                        console.log(`Input event: ${input.id} = "${input.value}"`);
+                        // Temporarily disable real-time calculation to test
+                        // this.debounceCalculate();
+                    });
+                    
+                    // Add number formatting
+                    if (input.type === 'number') {
+                        input.addEventListener('blur', (e) => {
+                            console.log(`Blur event: ${e.target.id} = "${e.target.value}"`);
+                            // Only format if there's a valid value
+                            if (e.target.value && e.target.value.trim() !== '') {
+                                const value = parseFloat(e.target.value.replace(/,/g, ''));
+                                if (!isNaN(value) && value > 0) {
+                                    // Format large numbers with commas
+                                    if (value >= 1000) {
+                                        e.target.value = value.toLocaleString();
+                                        console.log(`Formatted ${e.target.id} to: "${e.target.value}"`);
+                                    }
+                                }
+                            }
+                        });
+                        
+                        input.addEventListener('focus', (e) => {
+                            // Remove commas when focusing for easier editing
+                            if (e.target.value) {
+                                e.target.value = e.target.value.replace(/,/g, '');
+                            }
+                        });
+                    }
+                });
+            }
+
+            setDefaultValues() {
+                // Only set default values if user hasn't interacted with the form yet
+                if (this.userHasInteracted) {
+                    console.log('setDefaultValues: User has interacted, skipping defaults');
+                    return;
+                }
+                console.log('setDefaultValues: Setting default values - this should NOT happen after user types!');
+                
+                const fields = {
+                    'gross-income': '75000',
+                    'monthly-debts': '500',
+                    'down-payment-percent': '20',
+                    'interest-rate': '7.5',
+                    'loan-term': '30',
+                    'property-tax-rate': '1.2',
+                    'insurance-annual': '1200'
+                };
+                
+                Object.entries(fields).forEach(([id, defaultValue]) => {
+                    const element = document.getElementById(id);
+                    if (!element.value || element.value === '') {
+                        element.value = defaultValue;
+                    }
+                });
+            }
+
+            debounceCalculate() {
+                clearTimeout(this.debounceTimer);
+                this.debounceTimer = setTimeout(() => {
+                    if (this.isFormValid()) {
+                        this.calculateAffordability();
+                    }
+                }, 500);
+            }
+
+            handleSubmit(e) {
+                e.preventDefault();
+                
+                if (!this.isFormValid()) {
+                    this.showValidationErrors();
+                    return;
+                }
+                
+                this.calculateAffordability();
+            }
+
+            isFormValid() {
+                const inputs = this.form.querySelectorAll('input[required], input');
+                let isValid = true;
+                
+                inputs.forEach(input => {
+                    const value = parseFloat(input.value);
+                    if (isNaN(value) || value < 0) {
+                        isValid = false;
+                    }
+                });
+                
+                return isValid;
+            }
+
+            showValidationErrors() {
+                const inputs = this.form.querySelectorAll('input');
+                inputs.forEach(input => {
+                    const value = parseFloat(input.value);
+                    const wrapper = input.closest('.input-wrapper');
+                    
+                    if (isNaN(value) || value < 0) {
+                        wrapper.classList.add('error');
+                        this.showErrorMessage(input, 'Please enter a valid positive number');
+                    } else {
+                        wrapper.classList.remove('error');
+                        this.hideErrorMessage(input);
+                    }
+                });
+            }
+
+            showErrorMessage(input, message) {
+                this.hideErrorMessage(input);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = message;
+                input.parentNode.parentNode.appendChild(errorDiv);
+            }
+
+            hideErrorMessage(input) {
+                const existingError = input.parentNode.parentNode.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+            }
+
+            getFormData() {
+                return {
+                    grossIncome: parseFloat(document.getElementById('gross-income').value) || 0,
+                    monthlyDebts: parseFloat(document.getElementById('monthly-debts').value) || 0,
+                    downPaymentPercent: parseFloat(document.getElementById('down-payment-percent').value) || 0,
+                    interestRate: parseFloat(document.getElementById('interest-rate').value) || 0,
+                    loanTerm: parseFloat(document.getElementById('loan-term').value) || 0,
+                    propertyTaxRate: parseFloat(document.getElementById('property-tax-rate').value) || 0,
+                    insuranceAnnual: parseFloat(document.getElementById('insurance-annual').value) || 0
+                };
+            }
+
+            calculateAffordability() {
+                const data = this.getFormData();
+                
+                if (data.grossIncome === 0 || data.interestRate === 0 || data.loanTerm === 0) {
+                    return;
+                }
+
+                // Calculate monthly income
+                const monthlyIncome = data.grossIncome / 12;
+                
+                // Calculate maximum monthly housing payment (28% rule)
+                const maxHousingPayment = monthlyIncome * 0.28;
+                
+                // Calculate maximum total debt payment (36% rule)
+                const maxTotalDebtPayment = monthlyIncome * 0.36;
+                const maxMortgagePayment = maxTotalDebtPayment - data.monthlyDebts;
+                
+                // Use the more restrictive limit
+                const maxMonthlyPayment = Math.min(maxHousingPayment, maxMortgagePayment);
+                
+                if (maxMonthlyPayment <= 0) {
+                    this.showError('Your monthly debt payments are too high for a mortgage.');
+                    return;
+                }
+
+                // Calculate property tax and insurance components
+                const monthlyInsurance = data.insuranceAnnual / 12;
+                
+                // Calculate maximum principal and interest payment
+                const maxPrincipalInterest = maxMonthlyPayment - monthlyInsurance;
+                
+                // Calculate maximum loan amount using mortgage formula
+                const monthlyRate = data.interestRate / 100 / 12;
+                const numPayments = data.loanTerm * 12;
+                
+                let maxLoanAmount = 0;
+                if (monthlyRate > 0) {
+                    maxLoanAmount = maxPrincipalInterest * ((Math.pow(1 + monthlyRate, numPayments) - 1) / (monthlyRate * Math.pow(1 + monthlyRate, numPayments)));
+                } else {
+                    maxLoanAmount = maxPrincipalInterest * numPayments;
+                }
+                
+                // Calculate maximum home price
+                const downPaymentPercent = data.downPaymentPercent / 100;
+                const maxHomePrice = maxLoanAmount / (1 - downPaymentPercent);
+                
+                // Calculate actual monthly payment for the max home price
+                const actualLoanAmount = maxHomePrice * (1 - downPaymentPercent);
+                const actualPrincipalInterest = this.calculateMonthlyPayment(actualLoanAmount, data.interestRate, data.loanTerm);
+                const actualPropertyTax = (maxHomePrice * data.propertyTaxRate / 100) / 12;
+                const actualInsurance = data.insuranceAnnual / 12;
+                const actualTotalPayment = actualPrincipalInterest + actualPropertyTax + actualInsurance;
+                
+                // Calculate affordability metrics
+                const dtiRatio = ((data.monthlyDebts + actualTotalPayment) / monthlyIncome) * 100;
+                const housingRatio = (actualTotalPayment / monthlyIncome) * 100;
+                
+                // Display results
+                this.displayResults({
+                    maxHomePrice,
+                    maxLoanAmount: actualLoanAmount,
+                    downPaymentAmount: maxHomePrice * downPaymentPercent,
+                    principalInterest: actualPrincipalInterest,
+                    propertyTaxes: actualPropertyTax,
+                    homeInsurance: actualInsurance,
+                    totalMonthlyPayment: actualTotalPayment,
+                    dtiRatio,
+                    housingRatio
+                });
+            }
+
+            calculateMonthlyPayment(principal, annualRate, years) {
+                const monthlyRate = annualRate / 100 / 12;
+                const numPayments = years * 12;
+                
+                if (monthlyRate === 0) {
+                    return principal / numPayments;
+                }
+                
+                return principal * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
+                       (Math.pow(1 + monthlyRate, numPayments) - 1);
+            }
+
+            displayResults(results) {
+                // Update result values
+                document.getElementById('max-home-price').textContent = this.formatCurrency(results.maxHomePrice);
+                document.getElementById('max-loan-amount').textContent = this.formatCurrency(results.maxLoanAmount);
+                document.getElementById('down-payment-amount').textContent = this.formatCurrency(results.downPaymentAmount);
+                document.getElementById('principal-interest').textContent = this.formatCurrency(results.principalInterest);
+                document.getElementById('property-taxes').textContent = this.formatCurrency(results.propertyTaxes);
+                document.getElementById('home-insurance').textContent = this.formatCurrency(results.homeInsurance);
+                document.getElementById('total-monthly-payment').textContent = this.formatCurrency(results.totalMonthlyPayment);
+                document.getElementById('dti-ratio').textContent = this.formatPercentage(results.dtiRatio);
+                document.getElementById('housing-ratio').textContent = this.formatPercentage(results.housingRatio);
+                
+                // Update guideline status
+                const housingGuideline = document.getElementById('housing-guideline');
+                const dtiGuideline = document.getElementById('dti-guideline');
+                
+                housingGuideline.textContent = results.housingRatio <= 28 ? '✓' : '✗';
+                housingGuideline.style.color = results.housingRatio <= 28 ? '#22c55e' : '#ef4444';
+                
+                dtiGuideline.textContent = results.dtiRatio <= 36 ? '✓' : '✗';
+                dtiGuideline.style.color = results.dtiRatio <= 36 ? '#22c55e' : '#ef4444';
+                
+                // Show results section
+                this.resultsSection.style.display = 'block';
+                this.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            formatCurrency(amount) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(amount);
+            }
+
+            formatPercentage(value) {
+                return `${value.toFixed(1)}%`;
+            }
+
+            showError(message) {
+                // Create error display
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.style.cssText = `
+                    background: #fee2e2;
+                    border: 2px solid #ef4444;
+                    color: #dc2626;
+                    padding: 16px;
+                    border-radius: 8px;
+                    margin: 16px 0;
+                    font-weight: 500;
+                    text-align: center;
+                `;
+                errorDiv.textContent = message;
+                
+                // Insert before results section
+                this.resultsSection.parentNode.insertBefore(errorDiv, this.resultsSection);
+                
+                // Hide results
+                this.resultsSection.style.display = 'none';
+                
+                // Remove error after 5 seconds
+                setTimeout(() => {
+                    if (errorDiv.parentNode) {
+                        errorDiv.parentNode.removeChild(errorDiv);
+                    }
+                }, 5000);
+            }
+
+            resetForm() {
+                this.form.reset();
+                this.userHasInteracted = false; // Reset the interaction flag
+                this.setDefaultValues();
+                this.resultsSection.style.display = 'none';
+                
+                // Clear any error states
+                const errorWrappers = this.form.querySelectorAll('.input-wrapper.error');
+                errorWrappers.forEach(wrapper => wrapper.classList.remove('error'));
+                
+                const errorMessages = this.form.querySelectorAll('.error-message');
+                errorMessages.forEach(message => message.remove());
+                
+                // Clear any error displays
+                const errorDisplays = document.querySelectorAll('.error-message');
+                errorDisplays.forEach(display => {
+                    if (display.style.background === 'rgb(254, 226, 226)') {
+                        display.remove();
+                    }
+                });
+            }
+        }
+
+        // Initialize calculator when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new AffordabilityCalculator();
+        });
+
+        // Add some utility functions for better UX
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 'Enter':
+                            e.preventDefault();
+                            document.getElementById('affordability-form').dispatchEvent(new Event('submit'));
+                            break;
+                        case 'r':
+                            e.preventDefault();
+                            document.getElementById('reset-btn').click();
+                            break;
+                    }
+                }
+            });
+            
+            // Add touch-friendly interactions for mobile
+            if ('ontouchstart' in window) {
+                document.body.classList.add('touch-device');
+                
+                // Increase touch targets
+                const buttons = document.querySelectorAll('button');
+                buttons.forEach(button => {
+                    button.style.minHeight = '44px';
+                    button.style.minWidth = '44px';
+                });
+                
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.style.minHeight = '44px';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Affordability Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>How Much House Can I Afford?</h1>
+            <p class="subtitle">Calculate your maximum home purchase price based on your income and expenses</p>
+        </header>
+
+        <div class="calculator-container">
+            <form id="affordability-form" class="calculator-form">
+                <div class="input-section">
+                    <h2>Your Financial Information</h2>
+                    
+                    <div class="input-group">
+                        <label for="gross-income">Gross Annual Income</label>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="gross-income" name="grossIncome" placeholder="75,000" min="0" step="1">
+                        </div>
+                        <small class="help-text">Your total annual income before taxes</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="monthly-debts">Monthly Debt Payments</label>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="monthly-debts" name="monthlyDebts" placeholder="500" min="0" step="50">
+                        </div>
+                        <small class="help-text">Car loans, student loans, credit cards, etc.</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="down-payment-percent">Down Payment Percentage</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="down-payment-percent" name="downPaymentPercent" placeholder="20" min="0" max="100" step="1">
+                            <span class="percent-symbol">%</span>
+                        </div>
+                        <small class="help-text">Typical down payment is 20%</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="interest-rate">Interest Rate</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="interest-rate" name="interestRate" placeholder="7.5" min="0" max="20" step="0.1">
+                            <span class="percent-symbol">%</span>
+                        </div>
+                        <small class="help-text">Current mortgage interest rate</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="loan-term">Loan Term</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="loan-term" name="loanTerm" placeholder="30" min="1" max="50" step="1">
+                            <span class="term-symbol">years</span>
+                        </div>
+                        <small class="help-text">Length of your mortgage</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="property-tax-rate">Property Tax Rate (Annual)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="property-tax-rate" name="propertyTaxRate" placeholder="1.2" min="0" max="5" step="0.1">
+                            <span class="percent-symbol">%</span>
+                        </div>
+                        <small class="help-text">Local property tax rate (varies by location)</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="insurance-annual">Home Insurance (Annual)</label>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="insurance-annual" name="insuranceAnnual" placeholder="1,200" min="0" step="100">
+                        </div>
+                        <small class="help-text">Annual homeowners insurance cost</small>
+                    </div>
+                </div>
+
+                <div class="button-section">
+                    <button type="submit" class="calculate-btn">Calculate Affordability</button>
+                    <button type="button" id="reset-btn" class="reset-btn">Reset</button>
+                </div>
+            </form>
+
+            <div id="results" class="results-section" style="display: none;">
+                <h2>Your Affordability Results</h2>
+                
+                <div class="results-grid">
+                    <div class="result-card primary">
+                        <div class="result-label">Maximum Home Price</div>
+                        <div class="result-value" id="max-home-price">$0</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-label">Maximum Loan Amount</div>
+                        <div class="result-value" id="max-loan-amount">$0</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-label">Down Payment Required</div>
+                        <div class="result-value" id="down-payment-amount">$0</div>
+                    </div>
+                </div>
+
+                <div class="monthly-breakdown">
+                    <h3>Monthly Payment Breakdown</h3>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Principal & Interest</span>
+                        <span class="breakdown-value" id="principal-interest">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Property Taxes</span>
+                        <span class="breakdown-value" id="property-taxes">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Home Insurance</span>
+                        <span class="breakdown-value" id="home-insurance">$0</span>
+                    </div>
+                    <div class="breakdown-item total">
+                        <span class="breakdown-label">Total Monthly Payment</span>
+                        <span class="breakdown-value" id="total-monthly-payment">$0</span>
+                    </div>
+                </div>
+
+                <div class="affordability-metrics">
+                    <h3>Affordability Metrics</h3>
+                    <div class="metric-item">
+                        <span class="metric-label">Debt-to-Income Ratio</span>
+                        <span class="metric-value" id="dti-ratio">0%</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Housing Payment Ratio</span>
+                        <span class="metric-value" id="housing-ratio">0%</span>
+                    </div>
+                </div>
+
+                <div class="guidelines">
+                    <h3>Lending Guidelines</h3>
+                    <div class="guideline-item">
+                        <span class="guideline-text">Housing payment should be ≤ 28% of gross income</span>
+                        <span class="guideline-status" id="housing-guideline">✓</span>
+                    </div>
+                    <div class="guideline-item">
+                        <span class="guideline-text">Total debt payments should be ≤ 36% of gross income</span>
+                        <span class="guideline-status" id="dti-guideline">✓</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>This calculator provides estimates only. Consult with a financial advisor and mortgage lender for personalized advice.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
